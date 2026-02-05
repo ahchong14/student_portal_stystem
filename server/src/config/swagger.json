@@ -1,0 +1,16 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Student Portal API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/register": {"post": {"summary": "Register"}},
+    "/api/auth/login": {"post": {"summary": "Login"}},
+    "/api/courses": {"get": {"summary": "List courses"}},
+    "/api/timetable": {"get": {"summary": "Timetable"}},
+    "/api/grades": {"get": {"summary": "List grades"}},
+    "/api/transcripts": {"get": {"summary": "List transcript requests"}, "post": {"summary": "Request transcript"}},
+    "/api/finance/statement": {"get": {"summary": "Get statement"}}
+  }
+}
