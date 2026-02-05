@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: student_portal_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install server deps
+        run: npm install --prefix server
+      - name: Run server tests
+        run: npm test --prefix server
+        env:
+          DB_DIALECT: sqlite
+          DB_STORAGE: ':memory:'
+          JWT_SECRET: test_secret
+          JWT_REFRESH_SECRET: test_refresh_secret
+
+      - name: Install client deps
+        run: npm install --prefix client
+      - name: Run client tests
+        run: npm test --prefix client
+
+      - name: Build Docker images
+        run: |
+          docker build -t student-portal-server ./server
+          docker build -t student-portal-client ./client
